@@ -1,27 +1,47 @@
-# Ultroid - UserBot
+x-uffizzi:
 
-# Copyright (C) 2021-2022 TeamUltroid
+  ingress:
 
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
+    service: app
 
-# PLease read the GNU Affero General Public License in <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
+    port: 8080
 
-FROM theteamultroid/ultroid:main
+services:
 
-# set timezone
+  app:
 
-ENV TZ=Asia/Kolkata
+    build: .
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+    environment:
 
-COPY installer.sh .
+      NODE_ENV: staging
 
-RUN bash installer.sh
+    deploy:
 
-# changing workdir
+      resources:
 
-WORKDIR "/root/TeamUltroid"
+        limits:
 
-# start the bot.
+          memory: 4000M
 
-CMD ["bash", "startup"]
+    restart: always
+
+    ports:
+
+      - "3000:3000"
+
+    privileged: true
+
+    depends_on:
+
+      - app
+
+    cap_add:
+
+      - SYS_ADMIN
+
+    restart: always
+
+volumes:
+
+  data:
